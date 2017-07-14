@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MatchPoint Helper
 // @namespace    http://bogdan.com
-// @version      0.5
+// @version      0.6
 // @description  try to take over the world!!
 // @author       bbogdan
 // @match        https://*/*ConfigEditorForm.aspx*
@@ -17,6 +17,7 @@
 
 
 function fixCodeMirror() {
+    $('head').append('<style type="text/css">#__PopupMenu { margin-left: 34px; top:40px !important; }</style>');
     $('.mp-codeTextBoxTitle img[event=Toggle]').click(function() {
         $(this).parents('.mp-codeTextBox').find('.CodeMirror-scroll').height(`${window.innerHeight - 50}px`);
     });
