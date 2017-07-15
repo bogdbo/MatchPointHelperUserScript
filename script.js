@@ -9,29 +9,33 @@
 // @grant        none
 // ==/UserScript==
 
-(function() {
+(_=> {
+    addCss();
     fixCodeMirror();
     addConfigOpenAction();
     addTreeHelper();
 })();
 
+function addCss() {
+    const popupMenu = '#__PopupMenu { margin-left: 34px; top:40px !important; }';
+    const expanders = '.mp-helper-expand-action { cursor:pointer; margin-right:10px; font-family:monospace; }';
+    $('head').append(`<style type="text/css">${popupMenu} ${expanders}</style>`);
+}
 
 function fixCodeMirror() {
-    $('head').append('<style type="text/css">#__PopupMenu { margin-left: 34px; top:40px !important; }</style>');
     $('.mp-codeTextBoxTitle img[event=Toggle]').click(function() {
         $(this).parents('.mp-codeTextBox').find('.CodeMirror-scroll').height(`${window.innerHeight - 50}px`);
     });
 }
 
 function addTreeHelper() {
-    var style = "cursor:pointer; margin-right:10px; font-family:monospace; ";
     var handleClick = alt => {
         $(`img[alt^=${alt}]`).each((i,e) => e.parentElement.click());
     };
-    var expander =  $(`<span style="${style}">[ + ]</span>`).click(_ => handleClick('Expand'));
-    var collapser = $(`<span style="${style}">[ - ]</span>`).click(_ => handleClick('Collapse'));
+    var expander =  $(`<span class="mp-helper-expand-action">[ + ]</span>`).click(_ => handleClick('Expand'));
+    var collapser = $(`<span class="mp-helper-expand-action">[ - ]</span>`).click(_ => handleClick('Collapse'));
     const shouldExpand = getStorage('autoexpand') == 'true';
-    var checkbox =  $(`<input style="${style}" type="checkbox" title="Expand automatically"/>`).prop('checked', shouldExpand).change(function() { setStorage('autoexpand', this.checked); });
+    var checkbox =  $(`<input class="mp-helper-expand-action" type="checkbox" title="Expand automatically"/>`).prop('checked', shouldExpand).change(function() { setStorage('autoexpand', this.checked); });
     $('.mp-ceTreeCell').prepend(checkbox, expander, collapser);
     if (shouldExpand) {
         expander.click();
@@ -40,7 +44,7 @@ function addTreeHelper() {
 
 function addConfigOpenAction() {
     var editorPath = window.location.href.split('?')[0];
-    $('select').each(function(i, e) {
+    $('select').each((i, e) => {
         var $addLink = $('<a href="#">Open</a>').click(_ => {
             var url = getUrl(e.value);
             if (url) {
